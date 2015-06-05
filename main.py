@@ -4,11 +4,11 @@ import operator
 
 def print_outlink(weblist, top):
     for i in xrange(top):
-        print weblist[i][0], ":", weblist[i][1]
+        print "{0}:{1}".format(weblist[i][0], weblist[i][1])
 
     # Processing the remaining webpage with same outlink number
     while weblist[top-1][1] == weblist[top][1]:
-        print weblist[top][0], ":", weblist[top][1]
+        print "{0}:{1}".format(weblist[top][0], weblist[top][1])
         top = top + 1
     return
 
