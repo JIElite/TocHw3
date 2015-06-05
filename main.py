@@ -47,7 +47,13 @@ def get_list_outlink(fd):
 
 
 if __name__ == "__main__":
-    with open(sys.argv[1], "r") as fd:
+    try:
+        filename = sys.argv[1]
+    except IndexError:
+        print "There is no input file"
+        sys.exit(0)
+
+    with open(filename, "r") as fd:
         try:
             top_k = int(sys.argv[2])
         except IndexError as index_err:
