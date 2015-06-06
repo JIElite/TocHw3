@@ -42,7 +42,7 @@ def get_list_outlink(fd):
         pair = (weburl, len(links))
         weblist.append(pair)
 
-    weblist = sorted(weblist, key=operator.itemgetter(1), reverse=True)
+    weblist.sort(key=operator.itemgetter(1), reverse=True)
     return weblist
 
 
