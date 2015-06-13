@@ -10,32 +10,28 @@ if __name__ == "__main__":
     with open(sys.argv[1], "r") as fd:
 
         weblist = []
+        index = 0
         for line_msg in fd:
-
+            index = index + 1
             #web_url = re.search(r'"WARC-Target-URI":"(.+)","WARC-IP-Address"', line_msg)
             url = re.search('"WARC-Target-URI":"([^"]*)"', line_msg)
 
-            try:
-                links = re.search(r'"Links":\[{.+}\],"Head"', line_msg)
-                list_links = links.group()
+            pattern = r'''
+            "Links":
+             \[
+            (
+            {
+            ("\w+":"[^"]+",?)+
+            },?
+            )+
+             \]
+            '''
+            links = re.findall(pattern , line_msg)
+            print links
 
-                find_url = re.findall(r'"url":', list_links)
-                num_of_url = len(find_url)
-
-                find_href = re.findall(r'"href":', list_links)
-                num_of_href = len(find_href)
-
-                num_of_outlink = num_of_href + num_of_url
-            except AttributeError:
-                # This means there are no outlinks
-                num_of_outlink = 0
-
-            weblist.append([url.group(1), num_of_outlink])
+            #weblist.append([url.group(1), len(find)])
 
     weblist.sort(key=operator.itemgetter(1), reverse=True)
-
-    for data in weblist:
-        print data
 
     finish = time.time()
     print "Elapsed time: ", finish - start
