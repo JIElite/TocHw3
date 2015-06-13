@@ -31,14 +31,14 @@ def get_list_outlink(fd):
 
     for line_msg in fd:
 
-        #web_url = re.search(r'"WARC-Target-URI":"(.+)","WARC-IP-Address"', line_msg)
         url = re.search('"WARC-Target-URI":"([^"]*)"', line_msg)
 
         try:
             # Try to searh Outlinks, if return match object, means there
             # exist some outlinks of this uri
-            links = re.search(r'"Links":(\[{.+}\])}?,"\w', line_msg)
-            list_links = links.group(1)
+
+            links = re.search(r'"Links"[ :]+((?=\[)\[[^]]*\]|(?=\{)\{[^\}]*\}|\"[^"]*\")', line_msg)
+            list_links = links.group()
 
             find_url = re.findall(r'"url":', list_links)
             num_of_url = len(find_url)
@@ -61,7 +61,7 @@ def get_list_outlink(fd):
 
 if __name__ == "__main__":
 
-    start_time = time.time()
+    #start_time = time.time()
 
     try:
         filename = sys.argv[1]
@@ -89,5 +89,5 @@ if __name__ == "__main__":
         weblist = get_list_outlink(fd)
         print_outlink(weblist, top_k)
 
-    finish_time = time.time()
-    print "Elapsed Time: ", finish_time - start_time
+    #finish_time = time.time()
+    #print "Elapsed Time: ", finish_time - start_time
