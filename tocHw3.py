@@ -34,22 +34,25 @@ def get_list_outlink(fd):
         #web_url = re.search(r'"WARC-Target-URI":"(.+)","WARC-IP-Address"', line_msg)
         url = re.search('"WARC-Target-URI":"([^"]*)"', line_msg)
 
-
-        links = re.findall(r'"Links":\[{.+}\],"Head"', line_msg)
-
         try:
-            find_url = re.findall(r'"url":', links[0])
+            # Try to searh Outlinks, if return match object, means there
+            # exist some outlinks of this uri
+
+            links = re.search(r'"Links":\[{.+}\],"Head"', line_msg)
+            list_links = links.group()
+
+            find_url = re.findall(r'"url":', list_links)
             num_of_url = len(find_url)
-        except IndexError:
-            num_of_url = 0
 
-        try:
-            find_href = re.findall(r'"href":', links[0])
+            find_href = re.findall(r'"href":', list_links)
             num_of_href = len(find_href)
-        except IndexError:
-            num_of_href = 0
 
-        num_of_outlink = num_of_href + num_of_url
+            num_of_outlink = num_of_href + num_of_url
+        except AttributeError:
+            # This means there are no outlinks
+            num_of_outlink = 0
+
+
         weblist.append([url.group(1), num_of_outlink])
         #weblist.append([num_of_outlink, web_url.group(1)])
 
