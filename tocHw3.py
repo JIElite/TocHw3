@@ -1,7 +1,8 @@
 import sys
-import json
 import operator
 import os.path
+import re
+import time
 
 def print_outlink(weblist, top):
     total_data = len(weblist)
@@ -28,25 +29,38 @@ def print_outlink(weblist, top):
 def get_list_outlink(fd):
     weblist = []
 
-    for line in fd.readlines():
-        web_encode = json.loads(line)
-        # print json.dumps(web_encode, sort_keys=True, indent=4)
+    for line_msg in fd:
+
+        #web_url = re.search(r'"WARC-Target-URI":"(.+)","WARC-IP-Address"', line_msg)
+        url = re.search('"WARC-Target-URI":"([^"]*)"', line_msg)
+
+
+        links = re.findall(r'"Links":\[{.+}\],"Head"', line_msg)
+
         try:
-            weburl = web_encode['Envelope']['WARC-Header-Metadata']['WARC-Target-URI']
-            links = web_encode['Envelope']['Payload-Metadata']['HTTP-Response-Metadata']['HTML-Metadata']['Links']
-        except KeyError:
-            # If it arise KeyError means there is not ['Link'] element
-            # Because of using len(links) to get the number of outlink
-            # we set links to empty string to get 0
-            links = ""
-        pair = (weburl, len(links))
-        weblist.append(pair)
+            find_url = re.findall(r'"url":', links[0])
+            num_of_url = len(find_url)
+        except IndexError:
+            num_of_url = 0
+
+        try:
+            find_href = re.findall(r'"href":', links[0])
+            num_of_href = len(find_href)
+        except IndexError:
+            num_of_href = 0
+
+        num_of_outlink = num_of_href + num_of_url
+        weblist.append([url.group(1), num_of_outlink])
+        #weblist.append([num_of_outlink, web_url.group(1)])
 
     weblist.sort(key=operator.itemgetter(1), reverse=True)
     return weblist
 
 
 if __name__ == "__main__":
+
+    start_time = time.time()
+
     try:
         filename = sys.argv[1]
         if os.path.exists(filename):
@@ -72,3 +86,6 @@ if __name__ == "__main__":
             sys.exit(0)
         weblist = get_list_outlink(fd)
         print_outlink(weblist, top_k)
+
+    finish_time = time.time()
+    print "Elapsed Time: ", finish_time - start_time
