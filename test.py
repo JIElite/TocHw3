@@ -16,8 +16,11 @@ if __name__ == "__main__":
             url = re.search('"WARC-Target-URI":"([^"]*)"', line_msg)
 
             try:
-                links = re.search(r'"Links":\[{.+}\],"Head"', line_msg)
+                links = re.search(r'"Links":\[{.+}\]}?,"\w+"', line_msg)
                 list_links = links.group()
+
+                #find_out = re.findall(r'"path":"\w+@/\w+"', list_links)
+                #num_of_outlink = len(find_out)
 
                 find_url = re.findall(r'"url":', list_links)
                 num_of_url = len(find_url)
@@ -26,6 +29,7 @@ if __name__ == "__main__":
                 num_of_href = len(find_href)
 
                 num_of_outlink = num_of_href + num_of_url
+
             except AttributeError:
                 # This means there are no outlinks
                 num_of_outlink = 0
@@ -35,7 +39,7 @@ if __name__ == "__main__":
     weblist.sort(key=operator.itemgetter(1), reverse=True)
 
     for data in weblist:
-        print data
+        print data[0],":", data[1]
 
     finish = time.time()
     print "Elapsed time: ", finish - start

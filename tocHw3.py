@@ -37,9 +37,8 @@ def get_list_outlink(fd):
         try:
             # Try to searh Outlinks, if return match object, means there
             # exist some outlinks of this uri
-
-            links = re.search(r'"Links":\[{.+}\],"Head"', line_msg)
-            list_links = links.group()
+            links = re.search(r'"Links":(\[{.+}\])}?,"\w', line_msg)
+            list_links = links.group(1)
 
             find_url = re.findall(r'"url":', list_links)
             num_of_url = len(find_url)
