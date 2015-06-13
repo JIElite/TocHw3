@@ -2,6 +2,7 @@ import sys
 import re
 import operator
 import time
+import json
 
 if __name__ == "__main__":
 
@@ -16,22 +17,10 @@ if __name__ == "__main__":
             #web_url = re.search(r'"WARC-Target-URI":"(.+)","WARC-IP-Address"', line_msg)
             url = re.search('"WARC-Target-URI":"([^"]*)"', line_msg)
 
-            pattern = r'''
-            "Links":
-             \[
-            (
-            {
-            ("\w+":"[^"]+",?)+
-            },?
-            )+
-             \]
-            '''
-            links = re.findall(pattern , line_msg)
-            print links
+            web_encode = json.loads(line_msg)
+            links = web_encode['Envelope']['Payload-Metadata']['HTTP-Response-Metadata']['HTML-Metadata']['Links']
+            print json.dumps(links, indent=4)
 
-            #weblist.append([url.group(1), len(find)])
-
-    weblist.sort(key=operator.itemgetter(1), reverse=True)
 
     finish = time.time()
     print "Elapsed time: ", finish - start
