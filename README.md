@@ -29,6 +29,6 @@ python tocHw3.py inputfile request_top_k
 ```
 git checkout b97829a
 ```
-執行tocHw3.py這個檔案即可，雖然好像有一個微小的bug，就是這個版本在計算outlink number的時候，<br>
-是用built-in function: len( ) 去取得整個 "Links" 標籤內的內容，但是100比資料中，似乎有一筆資料的標籤並不包含<br>
-“href" 或是 "url" 導致那一筆資料的outlink數會差1。
+執行tocHw3.py這個檔案即可，雖然好像有一個微小的bug，就是這個版本在計算outlink number時，<br>
+使用 len( ) 去取得整個 "Links" 標籤內的內容。但在100筆資料中，似乎有一筆<br>
+資料的標籤並不包含“href" 或是 "url" 導致那一筆資料的outlink數會差1。
