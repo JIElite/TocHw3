@@ -25,7 +25,7 @@ import sys
 import operator
 import os.path
 import re
-# import time
+import time
 
 
 def print_data(weblist, top):
@@ -92,7 +92,7 @@ def get_outlink_list(fd, reversable):
     weblist = []
 
     for line_msg in fd:
-        url = re.search('"WARC-Target-URI":"([^"]*)"', line_msg)
+        url = re.search(r'"WARC-Target-URI":"([^"]*)"', line_msg)
         num_of_outlink = get_link_number(line_msg)
         weblist.append([url.group(1), num_of_outlink])
 
@@ -123,7 +123,7 @@ def validate_inputfile():
 
 
 if __name__ == "__main__":
-    # start_time = time.time()
+    start_time = time.time()
 
     filename = validate_inputfile()
 
@@ -142,5 +142,5 @@ if __name__ == "__main__":
         weblist = get_outlink_list(fd, True)
         print_data(weblist, top_k)
 
-    # finish_time = time.time()
-    # print "Elapsed Time: ", finish_time - start_time
+    finish_time = time.time()
+    print "Elapsed Time: ", finish_time - start_time
