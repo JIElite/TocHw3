@@ -27,7 +27,7 @@ import os.path
 import re
 import time
 
-uri_regex = re.compile(r'"WARC-Target-URI":"([^"]*)"')
+web_regex = re.compile(r'"WARC-Target-URI":"([^"]*)"')
 links_regex = re.compile(r'"Links":\[{.+}\](,"Head"|},"Entity-Digest")')
 url_regex = re.compile(r'"url":')
 href_regex = re.compile(r'"href":',)
@@ -99,7 +99,7 @@ def get_outlink_list(fd, reversable):
     weblist = []
 
     for line_msg in fd:
-        url = uri_regex.search(line_msg)
+        url = web_regex.search(line_msg)
         #url = re.search(r'"WARC-Target-URI":"([^"]*)"', line_msg)
         num_of_outlink = get_link_number(line_msg)
         weblist.append([url.group(1), num_of_outlink])
@@ -134,7 +134,6 @@ if __name__ == "__main__":
     start_time = time.time()
 
     filename = validate_inputfile()
-
     with open(filename, "r") as fd:
         try:
             top_k = int(sys.argv[2])
