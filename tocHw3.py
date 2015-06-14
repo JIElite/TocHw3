@@ -27,6 +27,11 @@ import os.path
 import re
 import time
 
+uri_regex = re.compile(r'"WARC-Target-URI":"([^"]*)"')
+links_regex = re.compile(r'"Links":\[{.+}\](,"Head"|},"Entity-Digest")')
+url_regex = re.compile(r'"url":')
+href_regex = re.compile(r'"href":',)
+
 
 def print_data(weblist, top):
     """
@@ -65,13 +70,15 @@ def get_link_number(line_msg):
     try:
         # Try to searh Outlinks, if return match object, means there
         # exist some outlinks of this uri
-        links = re.search(r'"Links":\[{.+}\](,"Head"|},"Entity-Digest")', line_msg)
+        links = links_regex.search(line_msg)
+        #links = re.search(r'"Links":\[{.+}\](,"Head"|},"Entity-Digest")', line_msg)
         list_links = links.group()
 
-        find_url = re.findall(r'"url":', list_links)
+        find_url = url_regex.findall(list_links)
+        #find_url = re.findall(r'"url":', list_links)
         num_of_url = len(find_url)
 
-        find_href = re.findall(r'"href":', list_links)
+        find_href = href_regex.findall(list_links)
         num_of_href = len(find_href)
 
         num_of_outlink = num_of_href + num_of_url
@@ -92,7 +99,8 @@ def get_outlink_list(fd, reversable):
     weblist = []
 
     for line_msg in fd:
-        url = re.search(r'"WARC-Target-URI":"([^"]*)"', line_msg)
+        url = uri_regex.search(line_msg)
+        #url = re.search(r'"WARC-Target-URI":"([^"]*)"', line_msg)
         num_of_outlink = get_link_number(line_msg)
         weblist.append([url.group(1), num_of_outlink])
 
