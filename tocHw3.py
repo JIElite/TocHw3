@@ -25,7 +25,7 @@ import sys
 import operator
 import os.path
 import re
-import time
+# import time
 
 
 def print_data(weblist, top):
@@ -100,10 +100,12 @@ def get_outlink_list(fd, reversable):
     return weblist
 
 
-if __name__ == "__main__":
-
-    start_time = time.time()
-
+def validate_inputfile():
+    '''
+    We Assume the second argument of CLI is input file
+    In this funtion, we need to check whether this argument(sys.argv[1]) is
+    legal or not. If it's illegal, we should exit program.
+    '''
     try:
         filename = sys.argv[1]
         if os.path.exists(filename):
@@ -117,17 +119,28 @@ if __name__ == "__main__":
         print "There is no such file: {0}".format(filename)
         sys.exit(0)
 
+    return filename
+
+
+if __name__ == "__main__":
+    # start_time = time.time()
+
+    filename = validate_inputfile()
+
     with open(filename, "r") as fd:
         try:
             top_k = int(sys.argv[2])
+            if top_k < 0:
+                raise ValueError
         except IndexError as index_err:
             print "There is no input top_k"
             sys.exit(0)
         except ValueError:
-            print "The top_k must be integer"
+            print "The top_k must be positive integer"
             sys.exit(0)
+
         weblist = get_outlink_list(fd, True)
         print_data(weblist, top_k)
 
-    finish_time = time.time()
-    print "Elapsed Time: ", finish_time - start_time
+    # finish_time = time.time()
+    # print "Elapsed Time: ", finish_time - start_time
