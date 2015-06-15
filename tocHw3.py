@@ -3,10 +3,12 @@
 # Name: Jie Han Chen(JIElite)
 # Student ID: F74016077
 #
-# This code is including 3 function:
+# This code is including 5 function:
 #   1. get_outlink_list(fd, reversable)
 #   2. get_link_number(website)
 #   3. print_data(weblist, top)
+#   4. get_input()
+#   5. get_topk()
 #
 # The first function is using for get a sorted list of input data, the element
 # is consist of  [webURI, outlink number]. You can choose the data list is
@@ -19,6 +21,12 @@
 # for input list which is the result of get_outlink_list(fd, reversable), and
 # The second parameter is for request.
 #
+# get_input() is used for check whether the second argument sys.argv[1] is
+# legal as a file.
+#
+# get_topk() is used for checkout whether the third number is existing and it
+# is a positive integer.
+#
 # ----------------------------------------------------------------------------
 
 import sys
@@ -26,6 +34,7 @@ import operator
 import os.path
 import re
 import time
+
 
 web_regex = re.compile(r'"WARC-Target-URI":"([^"]*)"')
 links_regex = re.compile(r'"Links":\[{.+}\](,"Head"|},"Entity-Digest")')
@@ -105,7 +114,7 @@ def get_outlink_list(fd, reversable):
     return weblist
 
 
-def validate_inputfile():
+def get_input():
     '''
     We Assume the second argument of CLI is input file
     In this funtion, we need to check whether this argument(sys.argv[1]) is
@@ -127,22 +136,26 @@ def validate_inputfile():
     return filename
 
 
+def get_topk():
+    try:
+        top_k = int(sys.argv[2])
+        if top_k < 0:
+            raise ValueError
+    except IndexError as index_err:
+        print "There is no input top_k"
+        sys.exit(0)
+    except ValueError:
+        print "The top_k must be positive integer"
+        sys.exit(0)
+
+    return top_k
+
 if __name__ == "__main__":
     start_time = time.time()
 
-    filename = validate_inputfile()
+    filename = get_input()
+    top_k = get_topk()
     with open(filename, "r") as fd:
-        try:
-            top_k = int(sys.argv[2])
-            if top_k < 0:
-                raise ValueError
-        except IndexError as index_err:
-            print "There is no input top_k"
-            sys.exit(0)
-        except ValueError:
-            print "The top_k must be positive integer"
-            sys.exit(0)
-
         weblist = get_outlink_list(fd, True)
         print_data(weblist, top_k)
 
