@@ -10,21 +10,19 @@
 #   4. get_input()
 #   5. get_topk()
 #
-# The first function is using for get a sorted list of input data, the element
+# The first function is used to get a sorted list of input data, the element
 # is consist of  [webURI, outlink number]. You can choose the data list is
 # ascending or descending.
 #
 # The second function: get_link_number(website) is using for get the number of
-# outlink for each URI. It use regex to parse the json-like data.
+# outlink for each URI. I use regex to parse the json data.
 #
-# The third function: print_data(weblist, top) has to parameter. The first is
-# for input list which is the result of get_outlink_list(fd, reversable), and
-# The second parameter is for request.
+# The third function: There are two parameters in print_data(weblist, top)
 #
-# get_input() is used for check whether the second argument sys.argv[1] is
-# legal as a file.
+# get_input() is used to check whether the second argument sys.argv[1] is
+# a file.
 #
-# get_topk() is used for checkout whether the third number is existing and it
+# get_topk() is used to check whether sys.argv[2] exists and it
 # is a positive integer.
 #
 # ----------------------------------------------------------------------------
@@ -44,10 +42,11 @@ href_regex = re.compile(r'"href":')
 
 def print_data(weblist, top):
     """
-    print_data(weblist, top) is using for output the data which is requested
+    print_data(weblist, top) is used to print out the data which is requested
     by user. If the user request 10 data, it should check fallthrough whether
     the outlink number of 11th data is as same as 10th.
     """
+
     num_of_data = len(weblist)
 
     for i in xrange(top):
@@ -58,7 +57,7 @@ def print_data(weblist, top):
             print "There are total: {0} data".format(num_of_data)
             return
 
-    # Processing the remaining webpage with same outlink number
+    # Process the remaining webpage with same outlink number
     if top < num_of_data:
         try:
             while weblist[top-1][1] == weblist[top][1]:
@@ -71,14 +70,15 @@ def print_data(weblist, top):
 
 def get_link_number(line_msg):
     """
-    This function should be not public, and it can get outlink number of each
-    website. It decide the number of outlink by using regex to search ''"url":'
-    and '"href"' pattern. Finally, add the result for each pattern to get
+    This function  can get outlink number of each website.
+    It decides the number of outlink by using regex to search  r'"url":'
+    and r'"href":' pattern. Finally, add the result for each pattern to get
     the number of outlink.
     """
+
     try:
-        # Try to searh Outlinks, if return match object, means there
-        # exist some outlinks of this uri
+        # Try to searh outlinks, if return match object, means there
+        # exist some outlinks of this uri.
         links = links_regex.search(line_msg)
         list_links = links.group()
 
@@ -97,12 +97,13 @@ def get_link_number(line_msg):
 
 
 def get_outlink_list(fd, reversable):
-    '''
-    This function return a sorted list, the key depends on number of outlink.
+    """
+    This function returns a sorted list, the key depends on number of outlink.
     The second parameter is for choosing the outlink is ascending(reversable = True)
     or descending(reversable = False). Finally it returns a list including
     [website uri, outlink number ] as each element in the list.
-    '''
+    """
+
     weblist = []
 
     for line_msg in fd:
@@ -115,11 +116,12 @@ def get_outlink_list(fd, reversable):
 
 
 def get_input():
-    '''
+    """
     We Assume the second argument of CLI is input file
     In this funtion, we need to check whether this argument(sys.argv[1]) is
-    legal or not. If it's illegal, we should exit program.
-    '''
+    a file. If it's not, we will print error message and exit.
+    """
+
     try:
         filename = sys.argv[1]
         if os.path.exists(filename):
