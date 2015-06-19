@@ -124,15 +124,12 @@ def get_input():
 
     try:
         filename = sys.argv[1]
-        if os.path.exists(filename):
-            pass
-        else:
-            raise IOError
+        if not os.path.exists(filename):
+            print "There is no such file: {0}".format(filename)
+            sys.exit(0)
+
     except IndexError:
         print "There is no input file"
-        sys.exit(0)
-    except IOError:
-        print "There is no such file: {0}".format(filename)
         sys.exit(0)
 
     return filename
