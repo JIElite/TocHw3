@@ -124,13 +124,13 @@ def get_input():
 
     try:
         filename = sys.argv[1]
-        if not os.path.exists(filename):
-            print "There is no such file: {0}".format(filename)
-            sys.exit(0)
-
     except IndexError:
         print "There is no input file"
-        sys.exit(0)
+        sys.exit()
+
+    if not os.path.exists(filename):
+        print "There is no such file: {0}".format(filename)
+        sys.exit()
 
     return filename
 
@@ -140,12 +140,12 @@ def get_topk():
         top_k = int(sys.argv[2])
         if top_k < 0:
             raise ValueError
-    except IndexError as index_err:
+    except IndexError:
         print "There is no input top_k"
-        sys.exit(0)
+        sys.exit()
     except ValueError:
         print "The top_k must be positive integer"
-        sys.exit(0)
+        sys.exit()
 
     return top_k
 
